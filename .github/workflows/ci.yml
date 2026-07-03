@@ -80,7 +80,16 @@ jobs:
             exit 1
           fi
       - name: Inspect JSON artifact
-        run: python3 -c "import json; r=json.load(open('tf-sentry-report.json')); assert r['failed'], r; print('artifact ok:', len(r['findings']), 'findings')"
+        # The artifact is generated with --fail-on never by design (it must
+        # exist even when the gate fails), so assert on findings, not `failed`.
+        run: |
+          python3 - <<'EOF'
+          import json
+          report = json.load(open("tf-sentry-report.json"))
+          assert report["findings"], "risky fixture must produce findings"
+          assert report["max_severity"] == "CRITICAL", report["max_severity"]
+          print(f"artifact ok: {len(report['findings'])} findings, max {report['max_severity']}")
+          EOF
 
   demo-review:
     name: Demo review output
