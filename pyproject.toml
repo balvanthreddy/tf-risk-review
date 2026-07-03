@@ -1,0 +1,78 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tf-sentry"
+version = "0.1.0"
+description = "CI-native risk review for terraform plan: deterministic policy checks plus an optional AI blast-radius summary"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [{ name = "Balvanth Reddy Gandra" }]
+keywords = ["terraform", "iac", "security", "policy", "ci", "code-review"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+]
+dependencies = [
+    "pydantic>=2.6",
+    "PyYAML>=6.0",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+bedrock = ["boto3>=1.34"]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=5.0",
+    "ruff>=0.4",
+    "mypy>=1.9",
+    "types-PyYAML",
+]
+
+[project.scripts]
+tf-sentry = "tf_sentry.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/balvanthreddy/tf-sentry"
+Documentation = "https://github.com/balvanthreddy/tf-sentry/tree/main/docs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tf_sentry"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "S", "SIM", "RUF"]
+ignore = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S105", "S106"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+mypy_path = "src"
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+    "opa: requires the opa binary on PATH (runs in CI)",
+]
+
+[tool.coverage.run]
+source = ["src/tf_sentry"]
