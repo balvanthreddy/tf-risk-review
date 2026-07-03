@@ -1,0 +1,180 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.8.5",
+  "resource_changes": [
+    {
+      "address": "module.legacy_batch.aws_instance.worker[0]",
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "worker",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "instance_type": "c5.xlarge",
+          "tags": {
+            "env": "prod"
+          }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "module.legacy_batch.aws_instance.worker[1]",
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "worker",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "instance_type": "c5.xlarge",
+          "tags": {
+            "env": "prod"
+          }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "module.legacy_batch.aws_instance.worker[2]",
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "worker",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "instance_type": "c5.xlarge",
+          "tags": {
+            "env": "prod"
+          }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "module.legacy_batch.aws_instance.worker[3]",
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "worker",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "instance_type": "c5.xlarge",
+          "tags": {
+            "env": "prod"
+          }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "module.legacy_batch.aws_instance.worker[4]",
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "worker",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "instance_type": "c5.xlarge",
+          "tags": {
+            "env": "prod"
+          }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "module.legacy_batch.aws_instance.worker[5]",
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "worker",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "instance_type": "c5.xlarge",
+          "tags": {
+            "env": "prod"
+          }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "module.legacy_batch.aws_instance.worker[6]",
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "worker",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "instance_type": "c5.xlarge",
+          "tags": {
+            "env": "prod"
+          }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "module.legacy_batch.aws_security_group.workers",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "workers",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "name": "legacy-workers-sg",
+          "ingress": []
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      }
+    }
+  ]
+}

@@ -38,9 +38,7 @@ class OpenAICompatibleClient:
     def __init__(self, base_url: str, api_key: str, model: str, timeout: float = 60.0) -> None:
         self._model = model
         headers = {"Authorization": f"Bearer {api_key}"} if api_key else {}
-        self._client = httpx.Client(
-            base_url=base_url.rstrip("/"), headers=headers, timeout=timeout
-        )
+        self._client = httpx.Client(base_url=base_url.rstrip("/"), headers=headers, timeout=timeout)
 
     def complete(self, system: str, user: str) -> str:
         try:
@@ -69,9 +67,7 @@ class BedrockClient:
         try:
             import boto3
         except ImportError as exc:  # pragma: no cover
-            raise SummaryError(
-                "Bedrock summary requires `pip install tf-sentry[bedrock]`"
-            ) from exc
+            raise SummaryError("Bedrock summary requires `pip install tf-sentry[bedrock]`") from exc
         self._model = model
         self._client = boto3.client("bedrock-runtime")
 

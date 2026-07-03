@@ -174,9 +174,7 @@ class BlastRadius(PlanRule):
         self._max_deletes = max_deletes
 
     def check_plan(self, changes: list[ResourceChange]) -> list[Finding]:
-        deletions = [
-            c.address for c in changes if c.action in (Action.DELETE, Action.REPLACE)
-        ]
+        deletions = [c.address for c in changes if c.action in (Action.DELETE, Action.REPLACE)]
         if len(deletions) <= self._max_deletes:
             return []
         shown = ", ".join(deletions[:8]) + ("…" if len(deletions) > 8 else "")

@@ -1,0 +1,87 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.8.5",
+  "resource_changes": [
+    {
+      "address": "aws_instance.api",
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "api",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["update"],
+        "before": { "instance_type": "t3.medium", "tags": { "env": "prod", "team": "platform" } },
+        "after": { "instance_type": "t3.large", "tags": { "env": "prod", "team": "platform" } },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_ebs_volume.data",
+      "mode": "managed",
+      "type": "aws_ebs_volume",
+      "name": "data",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "size": 100,
+          "encrypted": true,
+          "availability_zone": "us-east-1a",
+          "tags": { "env": "prod", "Environment": "production" }
+        },
+        "after_unknown": { "id": true, "arn": true },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_security_group.internal_api",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "internal_api",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "internal-api-sg",
+          "ingress": [
+            {
+              "cidr_blocks": ["10.40.0.0/16"],
+              "from_port": 443,
+              "to_port": 443,
+              "protocol": "tcp",
+              "ipv6_cidr_blocks": [],
+              "description": "VPC-internal HTTPS"
+            }
+          ],
+          "egress": []
+        },
+        "after_unknown": { "id": true, "arn": true },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_iam_role_policy.api_queue",
+      "mode": "managed",
+      "type": "aws_iam_role_policy",
+      "name": "api_queue",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "api-queue-access",
+          "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"sqs:SendMessage\",\"sqs:GetQueueAttributes\"],\"Resource\":\"arn:aws:sqs:us-east-1:123456789012:orders-queue\"}]}"
+        },
+        "after_unknown": { "id": true },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

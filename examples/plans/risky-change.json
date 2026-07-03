@@ -1,0 +1,223 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.8.5",
+  "resource_changes": [
+    {
+      "address": "aws_db_instance.orders",
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "orders",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "identifier": "prod-orders-db",
+          "engine": "postgres",
+          "allocated_storage": 100,
+          "storage_encrypted": true,
+          "password": "hunter2-should-never-appear",
+          "backup_retention_period": 14
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": { "password": true },
+        "after_sensitive": false
+      }
+    },
+    {
+      "address": "aws_dynamodb_table.sessions",
+      "mode": "managed",
+      "type": "aws_dynamodb_table",
+      "name": "sessions",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["delete", "create"],
+        "before": { "name": "prod-sessions", "hash_key": "session_id", "billing_mode": "PAY_PER_REQUEST" },
+        "after": { "name": "prod-sessions-v2", "hash_key": "session_id", "billing_mode": "PAY_PER_REQUEST" },
+        "after_unknown": { "arn": true, "id": true },
+        "before_sensitive": {},
+        "after_sensitive": {},
+        "replace_paths": [["name"]]
+      }
+    },
+    {
+      "address": "aws_security_group.bastion",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "bastion",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "bastion-sg",
+          "ingress": [
+            {
+              "cidr_blocks": ["0.0.0.0/0"],
+              "from_port": 22,
+              "to_port": 22,
+              "protocol": "tcp",
+              "ipv6_cidr_blocks": [],
+              "description": "temporary debug access"
+            }
+          ],
+          "egress": []
+        },
+        "after_unknown": { "id": true, "arn": true },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_iam_policy.deploy",
+      "mode": "managed",
+      "type": "aws_iam_policy",
+      "name": "deploy",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "name": "ci-deploy",
+          "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"s3:PutObject\",\"s3:GetObject\"],\"Resource\":\"arn:aws:s3:::deploy-artifacts/*\"}]}"
+        },
+        "after": {
+          "name": "ci-deploy",
+          "policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"*\",\"Resource\":\"*\"}]}"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_iam_role.external_integration",
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "external_integration",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "external-integration",
+          "assume_role_policy": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Action\":\"sts:AssumeRole\"}]}"
+        },
+        "after_unknown": { "arn": true, "id": true },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.reports",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "reports",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "bucket": "acme-reports",
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "ignore_public_acls": true,
+          "restrict_public_buckets": true
+        },
+        "after": {
+          "bucket": "acme-reports",
+          "block_public_acls": false,
+          "block_public_policy": false,
+          "ignore_public_acls": true,
+          "restrict_public_buckets": true
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_db_instance.analytics",
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "analytics",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["update"],
+        "before": {
+          "identifier": "prod-analytics-db",
+          "publicly_accessible": false,
+          "backup_retention_period": 14,
+          "storage_encrypted": true
+        },
+        "after": {
+          "identifier": "prod-analytics-db",
+          "publicly_accessible": true,
+          "backup_retention_period": 0,
+          "storage_encrypted": true
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_s3_bucket.exports",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "exports",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["update"],
+        "before": { "bucket": "acme-exports", "force_destroy": false },
+        "after": { "bucket": "acme-exports", "force_destroy": true },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_iam_access_key.reporting_bot",
+      "mode": "managed",
+      "type": "aws_iam_access_key",
+      "name": "reporting_bot",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": { "user": "reporting-bot" },
+        "after_unknown": { "id": true, "secret": true },
+        "before_sensitive": false,
+        "after_sensitive": { "secret": true }
+      }
+    },
+    {
+      "address": "aws_ebs_volume.scratch",
+      "mode": "managed",
+      "type": "aws_ebs_volume",
+      "name": "scratch",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": { "size": 500, "encrypted": false, "availability_zone": "us-east-1a" },
+        "after_unknown": { "id": true, "arn": true },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_instance.web",
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "web",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["update"],
+        "before": { "instance_type": "t3.medium", "tags": { "env": "prod" } },
+        "after": { "instance_type": "t3.large", "tags": { "env": "prod" } },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    }
+  ]
+}

@@ -84,9 +84,7 @@ def _to_findings(entries: Any, default_severity: Severity) -> list[Finding]:
         elif isinstance(entry, dict):
             message = str(entry.get("msg", "policy violation"))
             severity = (
-                Severity.parse(str(entry["severity"]))
-                if "severity" in entry
-                else default_severity
+                Severity.parse(str(entry["severity"])) if "severity" in entry else default_severity
             )
             address = str(entry.get("address", "(rego)"))
         else:

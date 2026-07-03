@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 from tf_sentry.models import Action, Finding, ResourceChange, Severity
 from tf_sentry.rules.base import ResourceRule
 
@@ -31,9 +33,9 @@ class PublicS3Exposure(ResourceRule):
                 )
                 if change.after_value(attr) is False
             ]
-            if disabled and (change.action is not Action.UPDATE or any(
-                change.changed(attr) for attr in disabled
-            )):
+            if disabled and (
+                change.action is not Action.UPDATE or any(change.changed(attr) for attr in disabled)
+            ):
                 findings.append(
                     self.finding(
                         change,
@@ -62,7 +64,9 @@ class PublicS3Exposure(ResourceRule):
                         title=f"S3 bucket ACL is {acl}",
                         detail="Object listing/reading (and possibly writing) is open to everyone.",
                         evidence=f"acl: {acl}",
-                        remediation="Use private ACLs; grant access via bucket policy to principals.",
+                        remediation=(
+                            "Use private ACLs; grant access via bucket policy to principals."
+                        ),
                     )
                 )
 
@@ -75,7 +79,7 @@ class EncryptionDisabled(ResourceRule):
     id = "STO002"
     default_severity = Severity.HIGH
 
-    _ATTR_BY_TYPE = {
+    _ATTR_BY_TYPE: ClassVar[dict[str, str | None]] = {
         "aws_db_instance": "storage_encrypted",
         "aws_rds_cluster": "storage_encrypted",
         "aws_ebs_volume": "encrypted",
@@ -159,7 +163,9 @@ class DurabilityWeakened(ResourceRule):
                             "suspending it removes that protection for new writes."
                         ),
                         evidence=f"versioning: {before} -> {after}",
-                        remediation="Keep versioning on; control cost with lifecycle rules instead.",
+                        remediation=(
+                            "Keep versioning on; control cost with lifecycle rules instead."
+                        ),
                     )
                 )
 

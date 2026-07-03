@@ -100,8 +100,7 @@ def parse_plan(raw: dict[str, Any]) -> list[ResourceChange]:
                 after_unknown=change.get("after_unknown") or {},
                 sensitive_paths=sensitive_paths,
                 replace_paths=tuple(
-                    ".".join(str(part) for part in path)
-                    for path in change.get("replace_paths", [])
+                    ".".join(str(part) for part in path) for path in change.get("replace_paths", [])
                 ),
             )
         )

@@ -192,7 +192,11 @@ class AdminPolicyAttachment(ResourceRule):
             "aws_iam_policy_attachment",
         }
     )
-    _ADMIN_SUFFIXES = ("policy/AdministratorAccess", "policy/PowerUserAccess", "policy/IAMFullAccess")
+    _ADMIN_SUFFIXES = (
+        "policy/AdministratorAccess",
+        "policy/PowerUserAccess",
+        "policy/IAMFullAccess",
+    )
 
     def check(self, change: ResourceChange) -> list[Finding]:
         if change.action not in _CHANGE_ACTIONS:

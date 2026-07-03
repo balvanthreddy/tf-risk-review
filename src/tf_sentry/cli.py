@@ -136,9 +136,7 @@ def _post_comment(report: Report, config: ReviewConfig) -> None:
         )
         return
     try:
-        outcome = upsert_pr_comment(
-            render_markdown(report, config.fail_on), repo, pr_number, token
-        )
+        outcome = upsert_pr_comment(render_markdown(report, config.fail_on), repo, pr_number, token)
         print(f"tf-sentry: PR comment {outcome}", file=sys.stderr)
     except GitHubError as exc:
         print(f"tf-sentry: comment failed: {exc}", file=sys.stderr)

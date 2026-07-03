@@ -22,7 +22,7 @@ class Severity(IntEnum):
     CRITICAL = 4
 
     @classmethod
-    def parse(cls, value: str) -> "Severity":
+    def parse(cls, value: str) -> Severity:
         try:
             return cls[value.strip().upper()]
         except KeyError as exc:
@@ -69,7 +69,7 @@ class ResourceChange:
         return _dig(self.after, path)
 
     def changed(self, *path: str) -> bool:
-        return _dig(self.before, path) != _dig(self.after, path)
+        return bool(_dig(self.before, path) != _dig(self.after, path))
 
 
 def _dig(data: Any, path: tuple[str, ...]) -> Any:
