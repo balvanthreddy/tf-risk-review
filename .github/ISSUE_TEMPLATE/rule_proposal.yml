@@ -1,0 +1,43 @@
+name: Rule proposal
+description: Propose a new detection rule
+labels: ["rule-proposal", "triage"]
+body:
+  - type: textarea
+    id: risk
+    attributes:
+      label: What risk does this catch?
+      description: What incident happens when a reviewer misses this change?
+    validations:
+      required: true
+  - type: textarea
+    id: trigger
+    attributes:
+      label: Triggering plan pattern
+      description: Resource type(s), action(s), and attribute conditions.
+      placeholder: |
+        e.g. aws_cloudfront_distribution updated with viewer_protocol_policy
+        changing from redirect-to-https to allow-all
+    validations:
+      required: true
+  - type: input
+    id: severity
+    attributes:
+      label: Proposed default severity
+      placeholder: critical | high | medium | low
+    validations:
+      required: true
+  - type: textarea
+    id: quiet-cases
+    attributes:
+      label: When must it stay quiet?
+      description: >
+        The false-positive analysis. What legitimate patterns look similar?
+        Rules that spam get disabled, which is worse than not existing.
+    validations:
+      required: true
+  - type: checkboxes
+    id: universality
+    attributes:
+      label: Scope check
+      options:
+        - label: This is a universal risk, not an org-specific policy (org policies belong in Rego — see docs/rego.md)

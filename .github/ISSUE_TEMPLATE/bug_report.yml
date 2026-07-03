@@ -1,0 +1,45 @@
+name: Bug report
+description: Something is broken
+labels: ["bug", "triage"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - False positive (rule fired when it shouldn't)
+        - False negative (rule missed a risk)
+        - Parser / plan format
+        - Config / severity gate
+        - OPA integration
+        - GitHub Action / PR comment
+        - AI summary
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: plan-snippet
+    attributes:
+      label: Minimal plan JSON snippet
+      description: >
+        The relevant resource_changes entry, with values redacted/anonymized.
+        For false positives/negatives this is essential — it becomes the
+        regression fixture.
+      render: json
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: |
+        tf-sentry version:
+        Terraform version:
+        Invocation: CLI | GitHub Action
+        Config: (contents of .tf-sentry.yaml if relevant)
+    validations:
+      required: true
