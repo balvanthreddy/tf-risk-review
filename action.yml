@@ -1,0 +1,82 @@
+name: tf-sentry
+description: >
+  Risk review for terraform plan: deterministic policy checks that can fail
+  the build, plus an optional AI blast-radius summary that never can.
+author: Balvanth Reddy Gandra
+branding:
+  icon: shield
+  color: purple
+
+inputs:
+  plan-json:
+    description: Path to `terraform show -json` output
+    required: true
+  config:
+    description: Path to a .tf-sentry.yaml (defaults to repo root if present)
+    required: false
+    default: ""
+  fail-on:
+    description: "Override fail threshold: critical | high | medium | low | never"
+    required: false
+    default: ""
+  rego-dir:
+    description: Directory of organization Rego policies (opa must be installed)
+    required: false
+    default: ""
+  summarize:
+    description: Add the advisory AI summary (set TF_SENTRY_LLM_* env vars)
+    required: false
+    default: "false"
+  comment:
+    description: Upsert the report as a sticky PR comment
+    required: false
+    default: "true"
+  github-token:
+    description: Token used to post the PR comment
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  report:
+    description: Path to the JSON report artifact
+    value: ${{ steps.review.outputs.report }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install tf-sentry
+      shell: bash
+      run: pip install --quiet "${{ github.action_path }}"
+
+    - name: Review plan
+      id: review
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        INPUT_PLAN: ${{ inputs.plan-json }}
+        INPUT_CONFIG: ${{ inputs.config }}
+        INPUT_FAIL_ON: ${{ inputs.fail-on }}
+        INPUT_REGO_DIR: ${{ inputs.rego-dir }}
+        INPUT_SUMMARIZE: ${{ inputs.summarize }}
+        INPUT_COMMENT: ${{ inputs.comment }}
+      run: |
+        common=()
+        [[ -n "$INPUT_CONFIG"   ]] && common+=(--config "$INPUT_CONFIG")
+        [[ -n "$INPUT_REGO_DIR" ]] && common+=(--rego-dir "$INPUT_REGO_DIR")
+
+        # Machine-readable artifact first; it must exist even when the gate fails.
+        tf-sentry review "$INPUT_PLAN" "${common[@]}" --fail-on never \
+          --format json --output tf-sentry-report.json > /dev/null
+        echo "report=tf-sentry-report.json" >> "$GITHUB_OUTPUT"
+
+        # Human-readable review: prints to the log, comments on the PR, sets
+        # the step outcome via exit code.
+        gated=("${common[@]}")
+        [[ -n "$INPUT_FAIL_ON" ]] && gated+=(--fail-on "$INPUT_FAIL_ON")
+        [[ "$INPUT_SUMMARIZE" == "true" ]] && gated+=(--summarize)
+        [[ "$INPUT_COMMENT"   == "true" ]] && gated+=(--github-comment)
+        tf-sentry review "$INPUT_PLAN" "${gated[@]}"

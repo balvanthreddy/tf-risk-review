@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  lint:
+    name: Lint & type-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Ruff lint
+        run: ruff check src tests
+      - name: Ruff format
+        run: ruff format --check src tests
+      - name: Mypy
+        run: mypy src
+
+  tests:
+    name: Tests (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - uses: open-policy-agent/setup-opa@v2
+        with:
+          version: latest
+      - name: Install
+        run: pip install -e ".[dev]"
+      - name: Run full suite (including OPA integration) with coverage gate
+        run: pytest --cov --cov-report=xml --cov-report=term --cov-fail-under=85
+      - name: Upload coverage artifact
+        if: matrix.python-version == env.PYTHON_VERSION
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.xml
+
+  action-smoke:
+    name: Action smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the action against the safe fixture (must pass)
+        uses: ./
+        with:
+          plan-json: examples/plans/safe-change.json
+          comment: "false"
+      - name: Run the action against the risky fixture (must fail)
+        id: risky
+        continue-on-error: true
+        uses: ./
+        with:
+          plan-json: examples/plans/risky-change.json
+          comment: "false"
+      - name: Assert the risky fixture failed the gate
+        run: |
+          if [[ "${{ steps.risky.outcome }}" != "failure" ]]; then
+            echo "risky-change.json should have failed the gate but did not"
+            exit 1
+          fi
+      - name: Inspect JSON artifact
+        run: python3 -c "import json; r=json.load(open('tf-sentry-report.json')); assert r['failed'], r; print('artifact ok:', len(r['findings']), 'findings')"
+
+  demo-review:
+    name: Demo review output
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      - uses: open-policy-agent/setup-opa@v2
+        with:
+          version: latest
+      - name: Install
+        run: pip install -e .
+      - name: Review the risky example with Rego policies and fake AI summary
+        env:
+          TF_SENTRY_LLM_PROVIDER: fake
+        run: |
+          tf-sentry review examples/plans/risky-change.json \
+            --rego-dir policies --summarize --format markdown \
+            --output demo-report.md || true
+      - name: Upload demo report
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-report
+          path: demo-report.md
