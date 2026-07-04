@@ -2,7 +2,7 @@
 # an Environment tag. Built-in rules cover universal risks; rules like this
 # one are org-specific and belong to the policy team — see docs/rego.md.
 
-package tfsentry
+package tf_risk_review
 
 import rego.v1
 

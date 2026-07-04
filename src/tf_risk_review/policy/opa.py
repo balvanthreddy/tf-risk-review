@@ -6,12 +6,12 @@ tagged with a data classification"). Those belong in Rego, evaluated by
 the ``opa`` binary against the same plan JSON.
 
 The adapter shells out to ``opa`` rather than embedding an evaluator:
-policy teams already own OPA tooling/testing, and tf-sentry stays free of
+policy teams already own OPA tooling/testing, and tf-risk-review stays free of
 a heavyweight dependency. If ``opa`` is not on PATH and a policy dir was
 requested, that is a hard error — silently skipping configured policy
 would be a security tool lying about coverage.
 
-Policy contract: rules live in package ``tfsentry`` and produce entries in
+Policy contract: rules live in package ``tf_risk_review`` and produce entries in
 ``deny`` (or ``warn``) shaped as::
 
     deny contains msg if { ... }              # msg: string, or
@@ -26,7 +26,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from tf_sentry.models import Finding, Severity
+from tf_risk_review.models import Finding, Severity
 
 
 class OpaError(RuntimeError):
@@ -53,7 +53,7 @@ def evaluate_rego(plan_json_path: Path, policy_dir: Path) -> list[Finding]:
             str(plan_json_path),
             "--data",
             str(policy_dir),
-            "data.tfsentry",
+            "data.tf_risk_review",
         ],
         capture_output=True,
         text=True,

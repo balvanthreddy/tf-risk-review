@@ -1,6 +1,6 @@
 """Review configuration.
 
-Repos customize behavior with a ``.tf-sentry.yaml`` at the root (or a path
+Repos customize behavior with a ``.tf-risk-review.yaml`` at the root (or a path
 passed via ``--config``). Everything has a working default: zero-config
 must produce a useful review, or nobody adopts the action.
 
@@ -25,7 +25,7 @@ from pathlib import Path
 
 import yaml
 
-from tf_sentry.models import Severity
+from tf_risk_review.models import Severity
 
 
 class ConfigError(ValueError):
@@ -54,7 +54,7 @@ class ReviewConfig:
 
 def load_config(path: Path | None) -> ReviewConfig:
     if path is None:
-        default = Path(".tf-sentry.yaml")
+        default = Path(".tf-risk-review.yaml")
         if not default.exists():
             return ReviewConfig()
         path = default

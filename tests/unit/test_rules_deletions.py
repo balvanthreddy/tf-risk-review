@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from tests.factories import change
-from tf_sentry.models import Action, Severity
-from tf_sentry.rules.deletions import (
+from tf_risk_review.models import Action, Severity
+from tf_risk_review.rules.deletions import (
     BlastRadius,
     DeletionProtectionDisabled,
     ForceDestroyEnabled,

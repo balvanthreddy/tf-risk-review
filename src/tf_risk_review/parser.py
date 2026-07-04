@@ -20,7 +20,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from tf_sentry.models import Action, ResourceChange
+from tf_risk_review.models import Action, ResourceChange
 
 REDACTED = "***REDACTED***"
 

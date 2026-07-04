@@ -27,7 +27,7 @@ corpus: ## Run the detection corpus only
 	pytest tests/corpus -v
 
 demo: ## Review the risky example plan
-	tf-sentry review examples/plans/risky-change.json --format text || true
+	tf-risk-review review examples/plans/risky-change.json --format text || true
 
 clean: ## Remove build artifacts and caches
 	rm -rf build dist *.egg-info .pytest_cache .mypy_cache .ruff_cache .coverage htmlcov

@@ -4,12 +4,12 @@ from pathlib import Path
 
 import pytest
 
-from tf_sentry.config import ConfigError, ReviewConfig, load_config
-from tf_sentry.models import Severity
+from tf_risk_review.config import ConfigError, ReviewConfig, load_config
+from tf_risk_review.models import Severity
 
 
 def _write(tmp_path: Path, content: str) -> Path:
-    path = tmp_path / ".tf-sentry.yaml"
+    path = tmp_path / ".tf-risk-review.yaml"
     path.write_text(content, encoding="utf-8")
     return path
 

@@ -9,24 +9,24 @@ from __future__ import annotations
 
 from dataclasses import replace
 
-from tf_sentry.config import ReviewConfig
-from tf_sentry.models import Finding, ResourceChange
-from tf_sentry.rules.base import PlanRule, ResourceRule
-from tf_sentry.rules.deletions import (
+from tf_risk_review.config import ReviewConfig
+from tf_risk_review.models import Finding, ResourceChange
+from tf_risk_review.rules.base import PlanRule, ResourceRule
+from tf_risk_review.rules.deletions import (
     BlastRadius,
     DeletionProtectionDisabled,
     ForceDestroyEnabled,
     StatefulDeletion,
     StatefulReplacement,
 )
-from tf_sentry.rules.iam import (
+from tf_risk_review.rules.iam import (
     AdminPolicyAttachment,
     OpenTrustPolicy,
     StaticAccessKey,
     WildcardPolicy,
 )
-from tf_sentry.rules.network import OpenIngress, PubliclyAccessibleDatabase
-from tf_sentry.rules.storage import DurabilityWeakened, EncryptionDisabled, PublicS3Exposure
+from tf_risk_review.rules.network import OpenIngress, PubliclyAccessibleDatabase
+from tf_risk_review.rules.storage import DurabilityWeakened, EncryptionDisabled, PublicS3Exposure
 
 
 def default_resource_rules() -> list[ResourceRule]:

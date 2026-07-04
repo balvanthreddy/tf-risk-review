@@ -4,13 +4,13 @@ import httpx
 import pytest
 
 from tests.factories import change
-from tf_sentry.config import ReviewConfig
-from tf_sentry.github import GitHubError, upsert_pr_comment
-from tf_sentry.models import Action, Report
-from tf_sentry.render.markdown import COMMENT_MARKER
-from tf_sentry.rules.engine import run_rules
-from tf_sentry.summary.llm import FakeClient, SummaryError, build_client, summarize
-from tf_sentry.summary.prompts import SYSTEM_PROMPT, build_user_prompt
+from tf_risk_review.config import ReviewConfig
+from tf_risk_review.github import GitHubError, upsert_pr_comment
+from tf_risk_review.models import Action, Report
+from tf_risk_review.render.markdown import COMMENT_MARKER
+from tf_risk_review.rules.engine import run_rules
+from tf_risk_review.summary.llm import FakeClient, SummaryError, build_client, summarize
+from tf_risk_review.summary.prompts import SYSTEM_PROMPT, build_user_prompt
 
 
 def _report() -> Report:
@@ -36,17 +36,17 @@ class TestSummary:
         assert "review" in text.lower()
 
     def test_build_client_none_by_default(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.delenv("TF_SENTRY_LLM_PROVIDER", raising=False)
+        monkeypatch.delenv("TF_RISK_REVIEW_LLM_PROVIDER", raising=False)
         assert build_client() is None
 
     def test_build_client_unknown_provider(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setenv("TF_SENTRY_LLM_PROVIDER", "banana")
+        monkeypatch.setenv("TF_RISK_REVIEW_LLM_PROVIDER", "banana")
         with pytest.raises(SummaryError, match="banana"):
             build_client()
 
     def test_build_client_requires_model(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setenv("TF_SENTRY_LLM_PROVIDER", "openai_compatible")
-        monkeypatch.delenv("TF_SENTRY_LLM_MODEL", raising=False)
+        monkeypatch.setenv("TF_RISK_REVIEW_LLM_PROVIDER", "openai_compatible")
+        monkeypatch.delenv("TF_RISK_REVIEW_LLM_MODEL", raising=False)
         with pytest.raises(SummaryError, match="MODEL"):
             build_client()
 

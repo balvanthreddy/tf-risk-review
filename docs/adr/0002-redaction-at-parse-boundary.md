@@ -7,7 +7,7 @@
 
 Terraform plan JSON contains full before/after attribute values — including
 database passwords, API tokens, and anything else in state. Downstream,
-tf-sentry writes findings into PR comments (visible to everyone with repo
+tf-risk-review writes findings into PR comments (visible to everyone with repo
 read), JSON artifacts (retained by CI), and optionally LLM prompts (sent to
 a third party). One careless `evidence=f"{change.after}"` in any future
 rule would leak secrets into all three.

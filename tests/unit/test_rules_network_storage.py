@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from tests.factories import change
-from tf_sentry.models import Action, Severity
-from tf_sentry.rules.network import OpenIngress, PubliclyAccessibleDatabase
-from tf_sentry.rules.storage import DurabilityWeakened, EncryptionDisabled, PublicS3Exposure
+from tf_risk_review.models import Action, Severity
+from tf_risk_review.rules.network import OpenIngress, PubliclyAccessibleDatabase
+from tf_risk_review.rules.storage import DurabilityWeakened, EncryptionDisabled, PublicS3Exposure
 
 
 def _sg(ingress: list[dict]) -> dict:

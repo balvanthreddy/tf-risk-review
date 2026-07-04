@@ -10,7 +10,7 @@ un-gate the build.
 
 from __future__ import annotations
 
-from tf_sentry.models import Report
+from tf_risk_review.models import Report
 
 SYSTEM_PROMPT = """\
 You are an infrastructure change-review assistant. You will receive a

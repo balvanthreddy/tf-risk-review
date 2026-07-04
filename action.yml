@@ -1,4 +1,4 @@
-name: tf-sentry
+name: tf-risk-review
 description: >
   Risk review for terraform plan: deterministic policy checks that can fail
   the build, plus an optional AI blast-radius summary that never can.
@@ -12,7 +12,7 @@ inputs:
     description: Path to `terraform show -json` output
     required: true
   config:
-    description: Path to a .tf-sentry.yaml (defaults to repo root if present)
+    description: Path to a .tf-risk-review.yaml (defaults to repo root if present)
     required: false
     default: ""
   fail-on:
@@ -24,7 +24,7 @@ inputs:
     required: false
     default: ""
   summarize:
-    description: Add the advisory AI summary (set TF_SENTRY_LLM_* env vars)
+    description: Add the advisory AI summary (set TF_RISK_REVIEW_LLM_* env vars)
     required: false
     default: "false"
   comment:
@@ -48,7 +48,7 @@ runs:
       with:
         python-version: "3.12"
 
-    - name: Install tf-sentry
+    - name: Install tf-risk-review
       shell: bash
       run: pip install --quiet "${{ github.action_path }}"
 
@@ -69,9 +69,9 @@ runs:
         [[ -n "$INPUT_REGO_DIR" ]] && common+=(--rego-dir "$INPUT_REGO_DIR")
 
         # Machine-readable artifact first; it must exist even when the gate fails.
-        tf-sentry review "$INPUT_PLAN" "${common[@]}" --fail-on never \
-          --format json --output tf-sentry-report.json > /dev/null
-        echo "report=tf-sentry-report.json" >> "$GITHUB_OUTPUT"
+        tf-risk-review review "$INPUT_PLAN" "${common[@]}" --fail-on never \
+          --format json --output tf-risk-review-report.json > /dev/null
+        echo "report=tf-risk-review-report.json" >> "$GITHUB_OUTPUT"
 
         # Human-readable review: prints to the log, comments on the PR, sets
         # the step outcome via exit code.
@@ -79,4 +79,4 @@ runs:
         [[ -n "$INPUT_FAIL_ON" ]] && gated+=(--fail-on "$INPUT_FAIL_ON")
         [[ "$INPUT_SUMMARIZE" == "true" ]] && gated+=(--summarize)
         [[ "$INPUT_COMMENT"   == "true" ]] && gated+=(--github-comment)
-        tf-sentry review "$INPUT_PLAN" "${gated[@]}"
+        tf-risk-review review "$INPUT_PLAN" "${gated[@]}"

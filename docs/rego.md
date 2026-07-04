@@ -7,9 +7,9 @@ team, versioned in your repo.
 
 ## Contract
 
-- Policies live in package **`tfsentry`**.
+- Policies live in package **`tf_risk_review`**.
 - The **input document** is the full `terraform show -json` output (the
-  same file tf-sentry reviews). Note: values marked sensitive are **not**
+  same file tf-risk-review reviews). Note: values marked sensitive are **not**
   redacted in the OPA input — OPA runs locally against your own file — but
   your policy messages should avoid echoing attribute values verbatim.
 - Violations are entries in two sets:
@@ -39,12 +39,12 @@ severity gate exactly like built-in findings.
 ## Running
 
 ```bash
-tf-sentry review plan.json --rego-dir policies/
+tf-risk-review review plan.json --rego-dir policies/
 ```
 
 Requires the `opa` binary on PATH (in GitHub Actions:
 `open-policy-agent/setup-opa@v2`). If `--rego-dir` is set and `opa` is
-missing, tf-sentry exits 2 — configured policy is never silently skipped.
+missing, tf-risk-review exits 2 — configured policy is never silently skipped.
 
 ## Testing your policies
 
@@ -55,7 +55,7 @@ opa test policies/ -v
 ```
 
 Keep a known-bad plan JSON in your repo and assert your policies fire on
-it — the same detection-corpus discipline tf-sentry applies to its
+it — the same detection-corpus discipline tf-risk-review applies to its
 built-in rules (see `tests/corpus/`).
 
 ## Working examples

@@ -1,6 +1,6 @@
 # Rule Reference
 
-Severities are defaults; override per repo in `.tf-sentry.yaml`. Update
+Severities are defaults; override per repo in `.tf-risk-review.yaml`. Update
 actions fire only when the risky attribute actually changed in this plan —
 pre-existing conditions are not re-reported on every PR.
 
@@ -46,7 +46,7 @@ See [rego.md](rego.md).
 
 ## Adding a rule
 
-1. Implement a `ResourceRule` (or `PlanRule`) in `src/tf_sentry/rules/` —
+1. Implement a `ResourceRule` (or `PlanRule`) in `src/tf_risk_review/rules/` —
    pure function of the change, evidence and remediation required.
 2. Unit-test positive, negative, and pre-existing-condition paths.
 3. Extend the detection corpus: add the triggering resource to a fixture

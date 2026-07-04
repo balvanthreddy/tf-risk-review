@@ -28,7 +28,7 @@ binary.
 Two deliberate details:
 
 - **Shell out, don't embed.** No Python OPA evaluator dependency; policy
-  teams run the same `opa` version they test with, and tf-sentry stays a
+  teams run the same `opa` version they test with, and tf-risk-review stays a
   small pure-Python install for the default path.
 - **Configured-but-missing OPA is a hard error (exit 2), never a skip.**
   A security gate that silently drops configured policy reports green
@@ -39,7 +39,7 @@ Two deliberate details:
 
 - Zero-Rego adoption path for most teams; a standard, testable extension
   path for policy teams.
-- The Rego contract (package `tfsentry`, `deny`/`warn` sets with optional
+- The Rego contract (package `tf_risk_review`, `deny`/`warn` sets with optional
   severity and address) is documented in docs/rego.md and integration-tested
   in CI with a real `opa` binary.
 - Trade-off: Rego findings carry less evidence than built-in rules (the

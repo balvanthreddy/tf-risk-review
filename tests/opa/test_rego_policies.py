@@ -11,8 +11,8 @@ from pathlib import Path
 
 import pytest
 
-from tf_sentry.models import Severity
-from tf_sentry.policy.opa import OpaError, evaluate_rego
+from tf_risk_review.models import Severity
+from tf_risk_review.policy.opa import OpaError, evaluate_rego
 
 pytestmark = [
     pytest.mark.opa,

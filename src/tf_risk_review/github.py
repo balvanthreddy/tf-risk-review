@@ -13,7 +13,7 @@ from pathlib import Path
 
 import httpx
 
-from tf_sentry.render.markdown import COMMENT_MARKER
+from tf_risk_review.render.markdown import COMMENT_MARKER
 
 _API = "https://api.github.com"
 # GitHub caps issue comments at 65536 characters.
@@ -38,7 +38,7 @@ def detect_pr_number() -> int | None:
 
 
 def upsert_pr_comment(body: str, repo: str, pr_number: int, token: str) -> str:
-    """Create or update the tf-sentry comment; returns 'created' or 'updated'."""
+    """Create or update the tf-risk-review comment; returns 'created' or 'updated'."""
     if len(body) > _MAX_COMMENT_CHARS:
         body = (
             body[:_MAX_COMMENT_CHARS]

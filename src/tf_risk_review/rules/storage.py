@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from tf_sentry.models import Action, Finding, ResourceChange, Severity
-from tf_sentry.rules.base import ResourceRule
+from tf_risk_review.models import Action, Finding, ResourceChange, Severity
+from tf_risk_review.rules.base import ResourceRule
 
 _CHANGE_ACTIONS = (Action.CREATE, Action.UPDATE, Action.REPLACE)
 

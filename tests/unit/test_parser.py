@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from tf_sentry.models import Action
-from tf_sentry.parser import REDACTED, PlanParseError, load_plan, parse_plan
+from tf_risk_review.models import Action
+from tf_risk_review.parser import REDACTED, PlanParseError, load_plan, parse_plan
 
 
 def _plan(*entries: dict) -> dict:

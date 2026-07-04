@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from tf_sentry.models import Action, ResourceChange
+from tf_risk_review.models import Action, ResourceChange
 
 
 def change(

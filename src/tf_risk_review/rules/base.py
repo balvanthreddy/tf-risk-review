@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from tf_sentry.models import Finding, ResourceChange, Severity
+from tf_risk_review.models import Finding, ResourceChange, Severity
 
 
 class ResourceRule(ABC):

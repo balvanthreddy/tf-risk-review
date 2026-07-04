@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 
-from tf_sentry.models import Report, Severity
+from tf_risk_review.models import Report, Severity
 
 
 def render_json(report: Report, fail_threshold: Severity | None) -> str:

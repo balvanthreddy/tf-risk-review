@@ -7,8 +7,8 @@ one line starting with ``-``.
 
 from __future__ import annotations
 
-from tf_sentry.models import Action, Finding, ResourceChange, Severity
-from tf_sentry.rules.base import PlanRule, ResourceRule
+from tf_risk_review.models import Action, Finding, ResourceChange, Severity
+from tf_risk_review.rules.base import PlanRule, ResourceRule
 
 # Resource types whose destruction destroys data or irrecoverable state,
 # not just infrastructure. Kept intentionally explicit: reviewability of

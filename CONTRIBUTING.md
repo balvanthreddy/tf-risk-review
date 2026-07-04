@@ -3,7 +3,7 @@
 ## Setup
 
 ```bash
-git clone https://github.com/balvanthreddy/tf-sentry && cd tf-sentry
+git clone https://github.com/balvanthreddy/tf-risk-review && cd tf-risk-review
 python3 -m venv .venv && source .venv/bin/activate
 make install
 make test        # OPA tests skip without the opa binary — CI runs them

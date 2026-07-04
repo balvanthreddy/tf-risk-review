@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "tf-sentry"
+name = "tf-risk-review"
 version = "0.1.0"
 description = "CI-native risk review for terraform plan: deterministic policy checks plus an optional AI blast-radius summary"
 readme = "README.md"
@@ -39,14 +39,14 @@ dev = [
 ]
 
 [project.scripts]
-tf-sentry = "tf_sentry.cli:main"
+tf-risk-review = "tf_risk_review.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/balvanthreddy/tf-sentry"
-Documentation = "https://github.com/balvanthreddy/tf-sentry/tree/main/docs"
+Homepage = "https://github.com/balvanthreddy/tf-risk-review"
+Documentation = "https://github.com/balvanthreddy/tf-risk-review/tree/main/docs"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/tf_sentry"]
+packages = ["src/tf_risk_review"]
 
 [tool.ruff]
 line-length = 100
@@ -75,4 +75,4 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["src/tf_sentry"]
+source = ["src/tf_risk_review"]

@@ -1,9 +1,9 @@
-# tf-sentry
+# tf-risk-review
 
 Risk review for `terraform plan` in CI: deterministic policy checks that can
 fail the build, plus an optional AI blast-radius summary that never can.
 
-[![CI](https://github.com/balvanthreddy/tf-sentry/actions/workflows/ci.yml/badge.svg)](https://github.com/balvanthreddy/tf-sentry/actions/workflows/ci.yml)
+[![CI](https://github.com/balvanthreddy/tf-risk-review/actions/workflows/ci.yml/badge.svg)](https://github.com/balvanthreddy/tf-risk-review/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](pyproject.toml)
 
@@ -15,12 +15,12 @@ replacement, an IAM policy widening to `*`, a security group opening SSH to
 the internet — renders as one line among thousands. Reviewers miss it; the
 incident happens at apply time, or worse, three weeks later.
 
-`tf-sentry` reads the machine-readable plan (`terraform show -json`) and
+`tf-risk-review` reads the machine-readable plan (`terraform show -json`) and
 reviews it the way a paranoid senior engineer would — deterministically,
 with evidence, on every PR.
 
 ```
-$ tf-sentry review plan.json
+$ tf-risk-review review plan.json
 
 [CRITICAL] DEL001 aws_db_instance.orders
   Stateful resource destroyed: aws_db_instance
@@ -49,7 +49,7 @@ Gate: fail on HIGH+ -> FAIL
   resource name tries prompt injection, the worst case is a weird paragraph
   — never a green check.
 
-This is the division of labor AI-assisted CI should have, and `tf-sentry`
+This is the division of labor AI-assisted CI should have, and `tf-risk-review`
 is useful with zero AI configured.
 
 ## Quickstart
@@ -75,7 +75,7 @@ jobs:
       - run: terraform plan -input=false -out=plan.out
       - run: terraform show -json plan.out > plan.json
 
-      - uses: balvanthreddy/tf-sentry@v1
+      - uses: balvanthreddy/tf-risk-review@v1
         with:
           plan-json: plan.json
           fail-on: high          # critical | high | medium | low | never
@@ -88,13 +88,13 @@ when findings reach the threshold.
 ### CLI
 
 ```bash
-pip install git+https://github.com/balvanthreddy/tf-sentry
+pip install git+https://github.com/balvanthreddy/tf-risk-review
 
 terraform plan -out=plan.out
 terraform show -json plan.out > plan.json
-tf-sentry review plan.json                          # human-readable + exit code
-tf-sentry review plan.json --format json            # machine-readable
-tf-sentry review plan.json --fail-on never          # report-only mode
+tf-risk-review review plan.json                          # human-readable + exit code
+tf-risk-review review plan.json --format json            # machine-readable
+tf-risk-review review plan.json --fail-on never          # report-only mode
 ```
 
 Exit codes: `0` pass · `1` gate failure · `2` execution error.
@@ -102,10 +102,10 @@ Exit codes: `0` pass · `1` gate failure · `2` execution error.
 ### Try it right now (no cloud account needed)
 
 ```bash
-git clone https://github.com/balvanthreddy/tf-sentry && cd tf-sentry
+git clone https://github.com/balvanthreddy/tf-risk-review && cd tf-risk-review
 pip install -e .
-tf-sentry review examples/plans/risky-change.json           # 11 findings, gate fails
-tf-sentry review examples/plans/safe-change.json            # clean pass
+tf-risk-review review examples/plans/risky-change.json           # 11 findings, gate fails
+tf-risk-review review examples/plans/safe-change.json            # clean pass
 ```
 
 ## What it catches
@@ -128,7 +128,7 @@ Design details that keep the signal clean:
 
 ## Configuration
 
-Optional `.tf-sentry.yaml` at the repo root:
+Optional `.tf-risk-review.yaml` at the repo root:
 
 ```yaml
 fail_on: high                # critical | high | medium | low | never
@@ -149,10 +149,10 @@ Built-in rules cover universal risks. Org-specific policy ("every resource
 tagged", "only approved providers") belongs to your policy team in Rego:
 
 ```bash
-tf-sentry review plan.json --rego-dir policies/
+tf-risk-review review plan.json --rego-dir policies/
 ```
 
-Policies live in package `tfsentry` and emit `deny`/`warn` entries — see
+Policies live in package `tf_risk_review` and emit `deny`/`warn` entries — see
 [policies/](policies/) for working examples and [docs/rego.md](docs/rego.md)
 for the contract. A configured-but-missing `opa` binary is a **hard error**:
 a security gate that silently skips configured policy is lying about
@@ -161,14 +161,14 @@ coverage.
 ## AI summary (optional)
 
 ```yaml
-      - uses: balvanthreddy/tf-sentry@v1
+      - uses: balvanthreddy/tf-risk-review@v1
         with:
           plan-json: plan.json
           summarize: "true"
         env:
-          TF_SENTRY_LLM_PROVIDER: openai_compatible   # or bedrock | fake
-          TF_SENTRY_LLM_MODEL: gpt-4o-mini
-          TF_SENTRY_LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          TF_RISK_REVIEW_LLM_PROVIDER: openai_compatible   # or bedrock | fake
+          TF_RISK_REVIEW_LLM_MODEL: gpt-4o-mini
+          TF_RISK_REVIEW_LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
 ```
 
 The model receives the structured findings (already redacted) — never raw

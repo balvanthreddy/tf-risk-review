@@ -12,9 +12,9 @@ from pathlib import Path
 
 import pytest
 
-from tf_sentry.config import ReviewConfig
-from tf_sentry.parser import load_plan
-from tf_sentry.rules.engine import run_rules
+from tf_risk_review.config import ReviewConfig
+from tf_risk_review.parser import load_plan
+from tf_risk_review.rules.engine import run_rules
 
 PLANS = Path(__file__).resolve().parents[2] / "examples" / "plans"
 

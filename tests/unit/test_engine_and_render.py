@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from tests.factories import change
-from tf_sentry.config import ReviewConfig, RuleOverride
-from tf_sentry.models import Action, Report, Severity
-from tf_sentry.render.json_out import render_json
-from tf_sentry.render.markdown import COMMENT_MARKER, render_markdown
-from tf_sentry.render.text import render_text
-from tf_sentry.rules.engine import run_rules
+from tf_risk_review.config import ReviewConfig, RuleOverride
+from tf_risk_review.models import Action, Report, Severity
+from tf_risk_review.render.json_out import render_json
+from tf_risk_review.render.markdown import COMMENT_MARKER, render_markdown
+from tf_risk_review.render.text import render_text
+from tf_risk_review.rules.engine import run_rules
 
 RISKY_DB_DELETE = change("aws_db_instance", Action.DELETE, address="aws_db_instance.prod")
 
@@ -70,7 +70,7 @@ class TestRenderers:
             Action.DELETE,
             address="aws_db_instance.<img src=x onerror=alert(1)>",
         )
-        from tf_sentry.rules.engine import run_rules as rr
+        from tf_risk_review.rules.engine import run_rules as rr
 
         report.findings = rr([evil], ReviewConfig())
         output = render_markdown(report, Severity.HIGH)

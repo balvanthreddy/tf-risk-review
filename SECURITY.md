@@ -8,7 +8,7 @@ impact assessment; expect an acknowledgment within a few days.
 
 ## Threat model summary
 
-**What tf-sentry protects:** the integrity of the review verdict and the
+**What tf-risk-review protects:** the integrity of the review verdict and the
 confidentiality of plan contents.
 
 **Verdict integrity.** Pass/fail comes exclusively from deterministic rules
@@ -34,7 +34,7 @@ enabled) receives structured findings only — never raw plan JSON.
   private-repo hygiene as the boundary.
 - `GITHUB_TOKEN` used for comments should be the default workflow token
   with `pull-requests: write` only — the action needs nothing more.
-- Rule coverage is a curated list, not a completeness guarantee. tf-sentry
+- Rule coverage is a curated list, not a completeness guarantee. tf-risk-review
   reduces reviewer misses; it does not replace review.
 
 ## Supported versions

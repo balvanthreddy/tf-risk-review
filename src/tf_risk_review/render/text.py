@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from tf_sentry.models import Report, Severity
+from tf_risk_review.models import Report, Severity
 
 
 def render_text(report: Report, fail_threshold: Severity | None) -> str:
-    lines = ["tf-sentry review", "================", ""]
+    lines = ["tf-risk-review review", "================", ""]
 
     actions = report.counts_by_action
     lines.append(

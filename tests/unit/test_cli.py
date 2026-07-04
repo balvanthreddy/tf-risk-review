@@ -5,13 +5,13 @@ from pathlib import Path
 
 import pytest
 
-from tf_sentry.cli import build_parser, main
+from tf_risk_review.cli import build_parser, main
 
 PLANS = Path(__file__).resolve().parents[2] / "examples" / "plans"
 
 
 def _run(monkeypatch: pytest.MonkeyPatch, *argv: str) -> int:
-    monkeypatch.setattr("sys.argv", ["tf-sentry", *argv])
+    monkeypatch.setattr("sys.argv", ["tf-risk-review", *argv])
     with pytest.raises(SystemExit) as exc:
         main()
     return int(exc.value.code or 0)
@@ -59,7 +59,7 @@ def test_json_output_written_to_file(monkeypatch: pytest.MonkeyPatch, tmp_path: 
 def test_summarize_with_fake_provider(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    monkeypatch.setenv("TF_SENTRY_LLM_PROVIDER", "fake")
+    monkeypatch.setenv("TF_RISK_REVIEW_LLM_PROVIDER", "fake")
     _run(monkeypatch, "review", str(PLANS / "risky-change.json"), "--summarize")
     assert "advisory only" in capsys.readouterr().out
 

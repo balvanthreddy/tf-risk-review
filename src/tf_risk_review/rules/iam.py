@@ -11,8 +11,8 @@ import json
 from dataclasses import replace
 from typing import Any
 
-from tf_sentry.models import Action, Finding, ResourceChange, Severity
-from tf_sentry.rules.base import ResourceRule
+from tf_risk_review.models import Action, Finding, ResourceChange, Severity
+from tf_risk_review.rules.base import ResourceRule
 
 _POLICY_BEARING_TYPES = frozenset(
     {

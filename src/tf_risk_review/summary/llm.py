@@ -9,10 +9,10 @@ provider hands.
 
 Configuration is environment-driven (works in CI secrets natively):
 
-    TF_SENTRY_LLM_PROVIDER   openai_compatible | bedrock | fake | none (default)
-    TF_SENTRY_LLM_BASE_URL   e.g. https://api.openai.com/v1
-    TF_SENTRY_LLM_API_KEY
-    TF_SENTRY_LLM_MODEL      e.g. gpt-4o-mini or a Bedrock model id
+    TF_RISK_REVIEW_LLM_PROVIDER   openai_compatible | bedrock | fake | none (default)
+    TF_RISK_REVIEW_LLM_BASE_URL   e.g. https://api.openai.com/v1
+    TF_RISK_REVIEW_LLM_API_KEY
+    TF_RISK_REVIEW_LLM_MODEL      e.g. gpt-4o-mini or a Bedrock model id
 """
 
 from __future__ import annotations
@@ -22,8 +22,8 @@ from typing import Protocol
 
 import httpx
 
-from tf_sentry.models import Report
-from tf_sentry.summary.prompts import SYSTEM_PROMPT, build_user_prompt
+from tf_risk_review.models import Report
+from tf_risk_review.summary.prompts import SYSTEM_PROMPT, build_user_prompt
 
 
 class SummaryError(RuntimeError):
@@ -67,7 +67,9 @@ class BedrockClient:
         try:
             import boto3
         except ImportError as exc:  # pragma: no cover
-            raise SummaryError("Bedrock summary requires `pip install tf-sentry[bedrock]`") from exc
+            raise SummaryError(
+                "Bedrock summary requires `pip install tf-risk-review[bedrock]`"
+            ) from exc
         self._model = model
         self._client = boto3.client("bedrock-runtime")
 
@@ -97,27 +99,27 @@ class FakeClient:
 
 
 def build_client() -> SummaryClient | None:
-    provider = os.environ.get("TF_SENTRY_LLM_PROVIDER", "none").lower()
+    provider = os.environ.get("TF_RISK_REVIEW_LLM_PROVIDER", "none").lower()
     if provider in ("none", ""):
         return None
     if provider == "fake":
         return FakeClient()
     if provider == "bedrock":
-        model = os.environ.get("TF_SENTRY_LLM_MODEL", "")
+        model = os.environ.get("TF_RISK_REVIEW_LLM_MODEL", "")
         if not model:
-            raise SummaryError("TF_SENTRY_LLM_MODEL is required for the bedrock provider")
+            raise SummaryError("TF_RISK_REVIEW_LLM_MODEL is required for the bedrock provider")
         return BedrockClient(model)
     if provider == "openai_compatible":
-        base_url = os.environ.get("TF_SENTRY_LLM_BASE_URL", "https://api.openai.com/v1")
-        model = os.environ.get("TF_SENTRY_LLM_MODEL", "")
+        base_url = os.environ.get("TF_RISK_REVIEW_LLM_BASE_URL", "https://api.openai.com/v1")
+        model = os.environ.get("TF_RISK_REVIEW_LLM_MODEL", "")
         if not model:
-            raise SummaryError("TF_SENTRY_LLM_MODEL is required for openai_compatible")
+            raise SummaryError("TF_RISK_REVIEW_LLM_MODEL is required for openai_compatible")
         return OpenAICompatibleClient(
             base_url=base_url,
-            api_key=os.environ.get("TF_SENTRY_LLM_API_KEY", ""),
+            api_key=os.environ.get("TF_RISK_REVIEW_LLM_API_KEY", ""),
             model=model,
         )
-    raise SummaryError(f"Unknown TF_SENTRY_LLM_PROVIDER: {provider!r}")
+    raise SummaryError(f"Unknown TF_RISK_REVIEW_LLM_PROVIDER: {provider!r}")
 
 
 def summarize(report: Report, client: SummaryClient) -> str:

@@ -37,9 +37,9 @@ body:
     attributes:
       label: Environment
       placeholder: |
-        tf-sentry version:
+        tf-risk-review version:
         Terraform version:
         Invocation: CLI | GitHub Action
-        Config: (contents of .tf-sentry.yaml if relevant)
+        Config: (contents of .tf-risk-review.yaml if relevant)
     validations:
       required: true

@@ -85,7 +85,7 @@ jobs:
         run: |
           python3 - <<'EOF'
           import json
-          report = json.load(open("tf-sentry-report.json"))
+          report = json.load(open("tf-risk-review-report.json"))
           assert report["findings"], "risky fixture must produce findings"
           assert report["max_severity"] == "CRITICAL", report["max_severity"]
           print(f"artifact ok: {len(report['findings'])} findings, max {report['max_severity']}")
@@ -107,9 +107,9 @@ jobs:
         run: pip install -e .
       - name: Review the risky example with Rego policies and fake AI summary
         env:
-          TF_SENTRY_LLM_PROVIDER: fake
+          TF_RISK_REVIEW_LLM_PROVIDER: fake
         run: |
-          tf-sentry review examples/plans/risky-change.json \
+          tf-risk-review review examples/plans/risky-change.json \
             --rego-dir policies --summarize --format markdown \
             --output demo-report.md || true
       - name: Upload demo report

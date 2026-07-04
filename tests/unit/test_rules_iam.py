@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 
 from tests.factories import change
-from tf_sentry.models import Action, Severity
-from tf_sentry.rules.iam import (
+from tf_risk_review.models import Action, Severity
+from tf_risk_review.rules.iam import (
     AdminPolicyAttachment,
     OpenTrustPolicy,
     StaticAccessKey,

@@ -17,29 +17,29 @@ import os
 import sys
 from pathlib import Path
 
-from tf_sentry import __version__
-from tf_sentry.config import ConfigError, ReviewConfig, load_config
-from tf_sentry.models import Report, Severity
-from tf_sentry.parser import PlanParseError, load_plan, plan_terraform_version
-from tf_sentry.policy.opa import OpaError, evaluate_rego
-from tf_sentry.render.json_out import render_json
-from tf_sentry.render.markdown import render_markdown
-from tf_sentry.render.text import render_text
-from tf_sentry.rules.engine import run_rules
-from tf_sentry.summary.llm import SummaryError, build_client, summarize
+from tf_risk_review import __version__
+from tf_risk_review.config import ConfigError, ReviewConfig, load_config
+from tf_risk_review.models import Report, Severity
+from tf_risk_review.parser import PlanParseError, load_plan, plan_terraform_version
+from tf_risk_review.policy.opa import OpaError, evaluate_rego
+from tf_risk_review.render.json_out import render_json
+from tf_risk_review.render.markdown import render_markdown
+from tf_risk_review.render.text import render_text
+from tf_risk_review.rules.engine import run_rules
+from tf_risk_review.summary.llm import SummaryError, build_client, summarize
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="tf-sentry",
+        prog="tf-risk-review",
         description="Risk review for terraform plan output",
     )
-    parser.add_argument("--version", action="version", version=f"tf-sentry {__version__}")
+    parser.add_argument("--version", action="version", version=f"tf-risk-review {__version__}")
     sub = parser.add_subparsers(dest="command", required=True)
 
     review = sub.add_parser("review", help="Review a plan JSON file")
     review.add_argument("plan", type=Path, help="terraform show -json output")
-    review.add_argument("--config", type=Path, default=None, help="Path to .tf-sentry.yaml")
+    review.add_argument("--config", type=Path, default=None, help="Path to .tf-risk-review.yaml")
     review.add_argument(
         "--format", choices=("text", "markdown", "json"), default="text", dest="fmt"
     )
@@ -56,7 +56,7 @@ def build_parser() -> argparse.ArgumentParser:
     review.add_argument(
         "--summarize",
         action="store_true",
-        help="Add an advisory AI summary (TF_SENTRY_LLM_* env vars)",
+        help="Add an advisory AI summary (TF_RISK_REVIEW_LLM_* env vars)",
     )
     review.add_argument(
         "--github-comment",
@@ -71,7 +71,7 @@ def _review(args: argparse.Namespace) -> int:
         config = load_config(args.config)
         changes = load_plan(args.plan)
     except (ConfigError, PlanParseError) as exc:
-        print(f"tf-sentry: {exc}", file=sys.stderr)
+        print(f"tf-risk-review: {exc}", file=sys.stderr)
         return 2
 
     if args.fail_on is not None:
@@ -84,7 +84,7 @@ def _review(args: argparse.Namespace) -> int:
             findings.extend(evaluate_rego(args.plan, args.rego_dir))
         except OpaError as exc:
             # Configured policy that cannot run is an error, not a skip.
-            print(f"tf-sentry: {exc}", file=sys.stderr)
+            print(f"tf-risk-review: {exc}", file=sys.stderr)
             return 2
         findings.sort(key=lambda f: (-int(f.severity), f.address, f.rule_id))
 
@@ -99,13 +99,14 @@ def _review(args: argparse.Namespace) -> int:
             client = build_client()
             if client is None:
                 print(
-                    "tf-sentry: --summarize set but TF_SENTRY_LLM_PROVIDER=none; skipping",
+                    "tf-risk-review: --summarize set but "
+                    "TF_RISK_REVIEW_LLM_PROVIDER=none; skipping",
                     file=sys.stderr,
                 )
             else:
                 report.summary_text = summarize(report, client)
         except SummaryError as exc:
-            print(f"tf-sentry: summary skipped: {exc}", file=sys.stderr)
+            print(f"tf-risk-review: summary skipped: {exc}", file=sys.stderr)
 
     renderer = {"text": render_text, "markdown": render_markdown, "json": render_json}[args.fmt]
     output = renderer(report, config.fail_on)
@@ -123,23 +124,23 @@ def _review(args: argparse.Namespace) -> int:
 
 
 def _post_comment(report: Report, config: ReviewConfig) -> None:
-    from tf_sentry.github import GitHubError, detect_pr_number, upsert_pr_comment
+    from tf_risk_review.github import GitHubError, detect_pr_number, upsert_pr_comment
 
     token = os.environ.get("GITHUB_TOKEN", "")
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     pr_number = detect_pr_number()
     if not token or not repo or pr_number is None:
         print(
-            "tf-sentry: --github-comment needs GITHUB_TOKEN, GITHUB_REPOSITORY, and a "
+            "tf-risk-review: --github-comment needs GITHUB_TOKEN, GITHUB_REPOSITORY, and a "
             "pull_request event; skipping comment",
             file=sys.stderr,
         )
         return
     try:
         outcome = upsert_pr_comment(render_markdown(report, config.fail_on), repo, pr_number, token)
-        print(f"tf-sentry: PR comment {outcome}", file=sys.stderr)
+        print(f"tf-risk-review: PR comment {outcome}", file=sys.stderr)
     except GitHubError as exc:
-        print(f"tf-sentry: comment failed: {exc}", file=sys.stderr)
+        print(f"tf-risk-review: comment failed: {exc}", file=sys.stderr)
 
 
 def main() -> None:

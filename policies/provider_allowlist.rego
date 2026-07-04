@@ -1,7 +1,7 @@
 # Example organization policy: only approved providers may manage
 # resources. Catches a PR that quietly introduces a new provider.
 
-package tfsentry
+package tf_risk_review
 
 import rego.v1
 
